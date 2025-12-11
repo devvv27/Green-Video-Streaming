@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./outputs:/app/outputs
+      # Mount ML models (if they exist locally, won't fail if missing)
+      - ./crf_model.pkl:/app/crf_model.pkl:ro
+      - ./preset_model.pkl:/app/preset_model.pkl:ro
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}  # Pass from .env file or environment
+    restart: unless-stopped
